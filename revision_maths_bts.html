@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maths BTS 1 CIEL-IR</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;--surface:#ffffff;--surface2:#f0ede8;
+  --border:#e2ddd8;--border2:#ccc8c0;
+  --text:#1a1917;--text2:#6b6760;--text3:#9b9790;
+  --accent:#2d5be3;--accent-bg:#eef1fc;--accent-text:#1e3fa8;
+  --ok:#166534;--ok-bg:#dcfce7;--ok-b:#86efac;
+  --ko:#991b1b;--ko-bg:#fee2e2;--ko-b:#fca5a5;
+  --warn:#92400e;--warn-bg:#fef3c7;--warn-b:#fcd34d;
+  --r:10px;--rs:6px;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+.shell{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.header{margin-bottom:1.8rem}
+.header h1{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:4px}
+.header p{font-size:13px;color:var(--text2)}
+.chapters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.4rem}
+.cbtn{padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--text2);font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;transition:all .15s}
+.cbtn:hover{border-color:var(--border2);color:var(--text);background:var(--surface2)}
+.cbtn.on{background:var(--text);color:#fff;border-color:var(--text)}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.4rem}
+.tbtn{padding:10px 22px;font-size:14px;font-family:var(--font);font-weight:500;cursor:pointer;border:none;border-bottom:2px solid transparent;color:var(--text3);background:none;transition:all .15s;margin-bottom:-1px}
+.tbtn:hover{color:var(--text2)}
+.tbtn.on{color:var(--text);border-bottom-color:var(--text)}
+.sec{display:none}.sec.on{display:block}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.fcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+.fcard h3{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.8rem}
+.fi{padding:6px 0;border-bottom:1px solid var(--border);line-height:1.5}
+.fi:last-child{border-bottom:none}
+.fi-label{font-size:11px;color:var(--text3);display:block;margin-bottom:2px}
+.fi-formula{font-family:var(--mono);font-size:13px;color:var(--accent-text);background:var(--accent-bg);padding:2px 7px;border-radius:4px;display:inline-block}
+.ecard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;margin-bottom:12px}
+.enum{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.eq{font-size:15px;color:var(--text);line-height:1.65;margin-bottom:1rem;font-weight:500}
+.choices{display:flex;flex-direction:column;gap:7px}
+.ch{display:flex;align-items:center;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:14px;font-family:var(--font);color:var(--text);background:var(--surface);text-align:left;transition:all .12s;width:100%}
+.ch:hover:not(.locked){border-color:var(--border2);background:var(--surface2)}
+.ch.sel{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-text)}
+.ch.ok{border-color:var(--ok-b);background:var(--ok-bg);color:var(--ok)}
+.ch.ko{border-color:var(--ko-b);background:var(--ko-bg);color:var(--ko)}
+.bdg{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;background:var(--surface2);color:var(--text3);transition:all .12s}
+.ch.sel .bdg{background:var(--accent-bg);color:var(--accent-text)}
+.ch.ok .bdg{background:var(--ok-bg);color:var(--ok)}
+.ch.ko .bdg{background:var(--ko-bg);color:var(--ko)}
+.expl{display:none;margin-top:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--rs);font-size:13px;color:var(--text2);line-height:1.6;border-left:3px solid var(--border2)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:1.4rem;flex-wrap:wrap;gap:10px}
+.prog{font-size:13px;color:var(--text3)}
+.btns{display:flex;gap:8px}
+.breset{padding:9px 18px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-family:var(--font);font-weight:500;cursor:pointer;transition:all .15s}
+.breset:hover{background:var(--surface2);border-color:var(--border2)}
+.bsubmit{padding:9px 18px;border-radius:var(--rs);border:none;background:var(--text);color:#fff;font-size:13px;font-family:var(--font);font-weight:600;cursor:pointer;transition:opacity .15s}
+.bsubmit:hover{opacity:.8}
+.bsubmit:disabled{opacity:.4;cursor:default}
+.banner{display:none;padding:1rem 1.2rem;border-radius:var(--r);margin-bottom:1.4rem;border:1px solid}
+.banner h2{font-size:15px;font-weight:600;margin-bottom:3px}
+.banner p{font-size:13px}
+.bgreat{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok)}
+.bok{background:var(--warn-bg);border-color:var(--warn-b);color:var(--warn)}
+.blow{background:var(--ko-bg);border-color:var(--ko-b);color:var(--ko)}
+@media(max-width:600px){.shell{padding:1.2rem 1rem 3rem}.fgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="header">
+    <h1>Maths &mdash; BTS 1 CIEL-IR</h1>
+    <p>6 chapitres &bull; Formules + Exercices corrig&eacute;s automatiquement</p>
+  </div>
+  <div class="chapters" id="chs"></div>
+  <div class="tabs">
+    <button class="tbtn on" onclick="switchTab(this,'fs')">Formules</button>
+    <button class="tbtn" onclick="switchTab(this,'es')">Exercices</button>
+  </div>
+  <div id="banner" class="banner"></div>
+  <div id="fs" class="sec on"></div>
+  <div id="es" class="sec">
+    <div id="elist"></div>
+    <div class="foot">
+      <span class="prog" id="prog"></span>
+      <div class="btns">
+        <button class="breset" onclick="resetEx()">Recommencer</button>
+        <button class="bsubmit" id="sbtn" onclick="submitAll()">Corriger tout</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var chapters=[
+{name:"Ch1 \u2014 Fonctions (1)",formulas:[
+{title:"Fonction affine",items:[{l:"Forme g\u00e9n\u00e9rale",f:"f(x) = mx + p"},{l:"m > 0",f:"f croissante sur \u211D"},{l:"m < 0",f:"f d\u00e9croissante sur \u211D"},{l:"Coeff. directeur",f:"m = (yB \u2212 yA) / (xB \u2212 xA)"}]},
+{title:"Polyn\u00f4me degr\u00e9 2",items:[{l:"Forme",f:"f(x) = ax\u00b2 + bx + c"},{l:"Sommet",f:"x\u2080 = \u2212b/(2a)"},{l:"Discriminant",f:"\u0394 = b\u00b2 \u2212 4ac"},{l:"\u0394 > 0",f:"x = (\u2212b \u00b1 \u221a\u0394) / 2a"},{l:"Forme canonique",f:"f(x) = a(x\u2212\u03b1)\u00b2 + \u03b2"}]},
+{title:"Parit\u00e9 / P\u00e9riodicit\u00e9",items:[{l:"Paire",f:"f(\u2212x) = f(x)"},{l:"Impaire",f:"f(\u2212x) = \u2212f(x)"},{l:"P\u00e9riodique",f:"f(x+T) = f(x)"}]}
+],exercises:[
+{q:"Ordonn\u00e9e \u00e0 l'origine de f(x) = 3x \u2212 5 ?",cs:["\u22125","3","5","\u22123"],a:0,e:"Dans f(x)=mx+p, p est l'ordonn\u00e9e \u00e0 l'origine. Ici p=\u22125."},
+{q:"Discriminant de f(x) = x\u00b2 \u2212 4x + 4 ?",cs:["0","8","\u22128","16"],a:0,e:"\u0394 = b\u00b2\u22124ac = 16\u221216 = 0. Parabole tangente \u00e0 l'axe des x."},
+{q:"f(x) = x\u2074 + 2x\u00b2 est :",cs:["Paire","Impaire","Ni paire ni impaire","P\u00e9riodique"],a:0,e:"f(\u2212x)=(\u2212x)\u2074+2(\u2212x)\u00b2=x\u2074+2x\u00b2=f(x). Donc f est paire."},
+{q:"Abscisse du sommet de f(x) = 2x\u00b2 \u2212 8x + 3 ?",cs:["2","\u22122","4","\u22124"],a:0,e:"x\u2080=\u2212b/(2a)=8/4=2."}
+]},
+{name:"Ch2 \u2014 Fonctions (2)",formulas:[
+{title:"Racine carr\u00e9e",items:[{l:"D\u00e9finition",f:"g(x) = \u221ax, sur [0\u00a0; +\u221e["},{l:"Variation",f:"strictement croissante"}]},
+{title:"Sin / Cos",items:[{l:"P\u00e9riode",f:"2\u03c0 pour sin et cos"},{l:"Parit\u00e9",f:"sin impaire, cos paire"},{l:"(sin x)'",f:"= cos x"},{l:"(cos x)'",f:"= \u2212sin x"}]},
+{title:"Logarithme n\u00e9p\u00e9rien",items:[{l:"Domaine",f:"ln sur ]0\u00a0; +\u221e["},{l:"ln(ab)",f:"= ln a + ln b"},{l:"ln(a/b)",f:"= ln a \u2212 ln b"},{l:"ln(a\u207f)",f:"= n\u00b7ln a"},{l:"Valeurs",f:"ln(1)=0, ln(e)=1"}]},
+{title:"Exponentielle",items:[{l:"e\u2070=1",f:"e\u1d43\u00d7e\u1d47 = e\u1d43\u207a\u1d47"},{l:"Puissance",f:"e\u207f\u02e3 = (e\u02e3)\u207f"},{l:"R\u00e9ciproque",f:"ln(e\u1d43)=a, e^(ln a)=a"}]}
+],exercises:[
+{q:"ln(e\u00b3) vaut :",cs:["3","e\u00b3","1/3","e"],a:0,e:"ln(e\u1d43)=a par d\u00e9finition. Donc ln(e\u00b3)=3."},
+{q:"e^(ln 5) vaut :",cs:["5","ln 5","1/5","e\u2075"],a:0,e:"e^(ln a)=a pour a>0. Donc e^(ln 5)=5."},
+{q:"ln(6)+ln(2)\u2212ln(3) = ?",cs:["ln(4)","ln(5)","ln(36)","ln(1)"],a:0,e:"= ln(6\u00d72/3) = ln(4)."},
+{q:"La fonction cosinus est :",cs:["Paire, p\u00e9riode 2\u03c0","Impaire, p\u00e9riode 2\u03c0","Paire, p\u00e9riode \u03c0","Non p\u00e9riodique"],a:0,e:"cos(\u2212x)=cos(x) donc paire. P\u00e9riode 2\u03c0."}
+]},
+{name:"Ch3 \u2014 Statistiques",formulas:[
+{title:"Position",items:[{l:"Moyenne",f:"x\u0305 = (1/N) \u00d7 \u03a3 n\u1d62x\u1d62"},{l:"M\u00e9diane",f:"50% des valeurs \u2264 Me"},{l:"Q1",f:"25% des valeurs \u2264 Q1"},{l:"Q3",f:"75% des valeurs \u2264 Q3"}]},
+{title:"Dispersion",items:[{l:"\u00c9tendue",f:"e = x_max \u2212 x_min"},{l:"\u00c9cart interquartile",f:"Q3 \u2212 Q1"},{l:"Variance",f:"V(X) = \u03a3n\u1d62(x\u1d62\u2212x\u0305)\u00b2/N"},{l:"\u00c9cart-type",f:"\u03c3 = \u221aV(X)"}]}
+],exercises:[
+{q:"S\u00e9rie\u00a0: 2,4,6,8,10. Moyenne ?",cs:["6","5","4","7"],a:0,e:"x\u0305=(2+4+6+8+10)/5=30/5=6."},
+{q:"S\u00e9rie\u00a0: 1,3,5,7,9. M\u00e9diane ?",cs:["5","4","6","7"],a:0,e:"N=5 (impair). M\u00e9diane = rang (5+1)/2=3\u1d49\u1d50\u1d49, soit 5."},
+{q:"Variance=9. \u00c9cart-type ?",cs:["3","81","4,5","\u221a3"],a:0,e:"\u03c3=\u221aV=\u221a9=3."},
+{q:"Q1=10, Q3=22. \u00c9cart interquartile ?",cs:["12","32","11","16"],a:0,e:"Q3\u2212Q1=22\u221210=12."}
+]},
+{name:"Ch4 \u2014 Complexes",formulas:[
+{title:"Forme alg\u00e9brique",items:[{l:"D\u00e9finition",f:"z = a + ib, i\u00b2=\u22121"},{l:"Re(z)",f:"= a"},{l:"Im(z)",f:"= b"},{l:"Conjugu\u00e9",f:"z\u0305 = a \u2212 ib"}]},
+{title:"Op\u00e9rations",items:[{l:"Somme",f:"(a+ib)+(a'+ib')=(a+a')+i(b+b')"},{l:"Produit",f:"zz'=(aa'\u2212bb')+i(ab'+a'b)"},{l:"z\u00d7z\u0305",f:"= a\u00b2+b\u00b2 (r\u00e9el)"},{l:"Inverse",f:"1/z = z\u0305/(a\u00b2+b\u00b2)"}]},
+{title:"Plan complexe",items:[{l:"Point image",f:"M(a,b) pour z=a+ib"},{l:"Affixe AB",f:"z_AB = z_B \u2212 z_A"},{l:"Milieu I",f:"z_I = (z_A+z_B)/2"}]}
+],exercises:[
+{q:"i\u00b2 vaut :",cs:["\u22121","1","i","\u2212i"],a:0,e:"Par d\u00e9finition, i\u00b2=\u22121."},
+{q:"Conjugu\u00e9 de z=3\u22122i ?",cs:["3+2i","\u22123+2i","3\u22122i","\u22123\u22122i"],a:0,e:"z\u0305=a\u2212ib. Si z=3\u22122i, z\u0305=3+2i."},
+{q:"(2+i)(1\u2212i) = ?",cs:["3\u2212i","1+3i","2\u2212i","3+i"],a:0,e:"(2+i)(1\u2212i)=2\u22122i+i\u2212i\u00b2=2\u2212i+1=3\u2212i."},
+{q:"Im(z) pour z=\u22124+7i ?",cs:["7","\u22124","\u22127","4"],a:0,e:"Im(z)=b. Ici b=7."}
+]},
+{name:"Ch5 \u2014 Suites",formulas:[
+{title:"Suite arithm\u00e9tique",items:[{l:"R\u00e9currence",f:"u_(n+1) = u_n + r"},{l:"Terme g\u00e9n\u00e9ral",f:"u_n = u_0 + n\u00d7r"},{l:"Somme",f:"S = n\u00d7(1er+dernier)/2"},{l:"Variation",f:"r>0\u21d2croissante | r<0\u21d2d\u00e9croissante"}]},
+{title:"Suite g\u00e9om\u00e9trique",items:[{l:"R\u00e9currence",f:"u_(n+1) = q\u00d7u_n"},{l:"Terme g\u00e9n\u00e9ral",f:"u_n = u_0\u00d7q\u207f"},{l:"Somme",f:"S = u_0\u00d7(1\u2212q\u207f)/(1\u2212q)"},{l:"0<q<1",f:"lim q\u207f = 0"},{l:"q>1",f:"lim q\u207f = +\u221e"}]}
+],exercises:[
+{q:"Suite arithm\u00e9tique\u00a0: u\u2080=5, r=3. u\u2084=?",cs:["17","14","20","12"],a:0,e:"u_n=u\u2080+n\u00d7r. u\u2084=5+4\u00d73=17."},
+{q:"Suite g\u00e9om\u00e9trique\u00a0: u\u2080=2, q=3. u\u2083=?",cs:["54","18","6","162"],a:0,e:"u_n=u\u2080\u00d7q\u207f. u\u2083=2\u00d727=54."},
+{q:"Limite de u_n=5\u00d7(0,4)\u207f ?",cs:["0","5","0,4","+\u221e"],a:0,e:"0<q<1 donc lim q\u207f=0, donc lim u_n=0."},
+{q:"Suite arithm\u00e9tique r=\u22123. Elle est :",cs:["D\u00e9croissante","Croissante","Constante","G\u00e9om\u00e9trique"],a:0,e:"r<0 donc strictement d\u00e9croissante."}
+]},
+{name:"Ch6 \u2014 Probabilit\u00e9s",formulas:[
+{title:"Propri\u00e9t\u00e9s",items:[{l:"\u00c9v\u00e9nement contraire",f:"P(\u0100)=1\u2212P(A)"},{l:"R\u00e9union",f:"P(A\u222aB)=P(A)+P(B)\u2212P(A\u2229B)"},{l:"Incompatibles",f:"A\u2229B=\u2205 \u21d2 P(A\u222aB)=P(A)+P(B)"}]},
+{title:"Proba conditionnelle",items:[{l:"D\u00e9finition",f:"P_A(B)=P(A\u2229B)/P(A)"},{l:"Proba totales",f:"P(A)=P(A\u2229B\u2081)+P(A\u2229B\u2082)+\u2026"},{l:"R\u00e8gle arbre",f:"P(chemin)=produit des probas"}]},
+{title:"Ind\u00e9pendance",items:[{l:"D\u00e9finition",f:"P(A\u2229B)=P(A)\u00d7P(B)"},{l:"Cons\u00e9quence",f:"P_A(B)=P(B) si ind\u00e9p."}]}
+],exercises:[
+{q:"P(A)=0,3. P(\u0100)=?",cs:["0,7","0,3","1,3","0"],a:0,e:"P(\u0100)=1\u2212P(A)=1\u22120,3=0,7."},
+{q:"P(A)=0,5; P(B)=0,4; P(A\u2229B)=0,2. P(A\u222aB)=?",cs:["0,7","0,9","0,3","0,1"],a:0,e:"P(A\u222aB)=0,5+0,4\u22120,2=0,7."},
+{q:"P(A\u2229B)=0,12 et P(A)=0,4. P_A(B)=?",cs:["0,3","0,48","3","0,28"],a:0,e:"P_A(B)=0,12/0,4=0,3."},
+{q:"A,B ind\u00e9pendants. P(A)=0,6; P(B)=0,5. P(A\u2229B)=?",cs:["0,3","0,1","1,1","0,06"],a:0,e:"P(A\u2229B)=P(A)\u00d7P(B)=0,6\u00d70,5=0,3."}
+]}
+];
+
+var cur=0,ans={},done=false;
+
+function buildChapters(){
+  var el=document.getElementById('chs');
+  el.innerHTML='';
+  chapters.forEach(function(ch,idx){
+    var b=document.createElement('button');
+    b.className='cbtn'+(idx===0?' on':'');
+    b.textContent=ch.name;
+    b.onclick=(function(i){return function(){selectCh(i);};})(idx);
+    el.appendChild(b);
+  });
+}
+
+function selectCh(idx){
+  cur=idx;ans={};done=false;
+  document.querySelectorAll('.cbtn').forEach(function(b,i){b.classList.toggle('on',i===idx);});
+  renderFormulas();renderExercises();
+  document.getElementById('banner').style.display='none';
+}
+
+function switchTab(btn,secId){
+  document.querySelectorAll('.tbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.getElementById(secId).classList.add('on');
+}
+
+function renderFormulas(){
+  var ch=chapters[cur],html='<div class="fgrid">';
+  ch.formulas.forEach(function(f){
+    html+='<div class="fcard"><h3>'+f.title+'</h3>';
+    f.items.forEach(function(it){
+      html+='<div class="fi"><span class="fi-label">'+it.l+'</span><span class="fi-formula">'+it.f+'</span></div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('fs').innerHTML=html;
+}
+
+function renderExercises(){
+  var ch=chapters[cur];done=false;
+  document.getElementById('sbtn').textContent='Corriger tout';
+  document.getElementById('sbtn').disabled=false;
+  document.getElementById('banner').style.display='none';
+  var html='';
+  ch.exercises.forEach(function(ex,i){
+    html+='<div class="ecard"><div class="enum">Question '+(i+1)+' / '+ch.exercises.length+'</div>';
+    html+='<div class="eq">'+ex.q+'</div><div class="choices" id="cs'+i+'">';
+    ex.cs.forEach(function(c,j){
+      html+='<button class="ch" id="c'+i+'_'+j+'" onclick="pick('+i+','+j+')">';
+      html+='<span class="bdg">'+String.fromCharCode(65+j)+'</span><span>'+c+'</span></button>';
+    });
+    html+='</div><div class="expl" id="ex'+i+'">'+ex.e+'</div></div>';
+  });
+  document.getElementById('elist').innerHTML=html;
+  updateProg();
+}
+
+function pick(ei,ci){
+  if(done)return;
+  ans[ei]=ci;
+  chapters[cur].exercises[ei].cs.forEach(function(_,j){
+    document.getElementById('c'+ei+'_'+j).classList.toggle('sel',j===ci);
+  });
+  updateProg();
+}
+
+function updateProg(){
+  document.getElementById('prog').textContent=Object.keys(ans).length+' / '+chapters[cur].exercises.length+' r\u00e9pondu(s)';
+}
+
+function submitAll(){
+  if(done)return;
+  done=true;
+  var ch=chapters[cur],correct=0;
+  ch.exercises.forEach(function(ex,i){
+    var chosen=ans[i];
+    if(chosen===ex.a)correct++;
+    ex.cs.forEach(function(_,j){
+      var b=document.getElementById('c'+i+'_'+j);
+      b.classList.remove('sel');b.classList.add('locked');
+      if(j===ex.a)b.classList.add('ok');
+      else if(j===chosen)b.classList.add('ko');
+    });
+    document.getElementById('ex'+i).style.display='block';
+  });
+  var pct=Math.round(correct/ch.exercises.length*100);
+  var banner=document.getElementById('banner');
+  banner.style.display='block';
+  if(pct>=75){banner.className='banner bgreat';banner.innerHTML='<h2>Excellent\u00a0! '+correct+'/'+ch.exercises.length+' ('+pct+'%)</h2><p>Tu ma\u00eetrises bien ce chapitre\u00a0!</p>';}
+  else if(pct>=50){banner.className='banner bok';banner.innerHTML='<h2>Bien\u00a0! '+correct+'/'+ch.exercises.length+' ('+pct+'%)</h2><p>Encore quelques formules \u00e0 revoir.</p>';}
+  else{banner.className='banner blow';banner.innerHTML='<h2>\u00c0 retravailler \u2014 '+correct+'/'+ch.exercises.length+' ('+pct+'%)</h2><p>Revois les formules puis recommence\u00a0!</p>';}
+  document.getElementById('sbtn').textContent='Corrig\u00e9';
+  document.getElementById('sbtn').disabled=true;
+  banner.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function resetEx(){ans={};done=false;renderExercises();}
+
+buildChapters();renderFormulas();renderExercises();
+</script>
+</body>
+</html>
